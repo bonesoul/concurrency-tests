@@ -30,15 +30,15 @@ namespace ConcurrencyTests
         {
             string[] feeds = {
                                  "http://www.teamliquid.net/rss/news.xml",
-                                 "http://www.blizztv.com/rss/ccs/1-blizztvcom/",
+                                 "http://www.diablofans.com/rss/forums/1-diablo-fans-home-page-news/",
                                  "http://feeds.feedburner.com/blizzplanetcom",
                                  "http://www.tehgladiators.com/rss.xml",
-                                 "http://www.worldofraids.com/rss/forums/1-world-of-raids-news/",
+                                 "http://www.mmo-champion.com/external.php?do=rss&type=newcontent&sectionid=1&days=120&count=10",
                                  "http://wow.joystiq.com/rss.xml",
                                  "http://www.wowhead.com/blog&rss",
                                  "http://www.tentonhammer.com/wow/all/feed",
                                  "http://feeds.feedburner.com/LookingForGroup",
-                                 "http://www.mmo-champion.com/external.php?do=rss&type=newcontent&sectionid=1&days=120&count=10"
+								  "http://www.d3sanc.com/feed/"	
                              };
 
             const int iterationCount = 10;
