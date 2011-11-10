@@ -47,7 +47,7 @@ namespace ConcurrencyTests
             var timeSpanTPLs = new TimeSpan[iterationCount];
             var timeSpanThreadPools = new TimeSpan[iterationCount];
 
-            PrintCPUInfo();
+            //PrintCPUInfo();
             Console.WriteLine("Will be parsing a total of {0} feeds.", feeds.Length);
             Console.WriteLine("________________________________________________________________________________");
             Console.WriteLine("Itr.\tSeq.\tPrlEx\tTPL\tTPool");
