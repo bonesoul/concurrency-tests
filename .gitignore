@@ -1,0 +1,5 @@
+/bin/
+/obj/
+/_ReSharper.ConcurrencyTests/
+/*.6.0.ReSharper.user
+/*.suo
