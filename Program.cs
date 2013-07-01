@@ -46,11 +46,12 @@ namespace ConcurrencyTests
             var timeSpanParallelForEachs = new TimeSpan[iterationCount];
             var timeSpanTPLs = new TimeSpan[iterationCount];
             var timeSpanThreadPools = new TimeSpan[iterationCount];
+	        var timeSpanThreads = new TimeSpan[iterationCount];
 
             //PrintCPUInfo();
             Console.WriteLine("Will be parsing a total of {0} feeds.", feeds.Length);
             Console.WriteLine("________________________________________________________________________________");
-            Console.WriteLine("Itr.\tSeq.\tPrlEx\tTPL\tTPool");
+            Console.WriteLine("Itr.\tSeq.\tPrlEx\tTPL\tTPool\tThread");
             Console.WriteLine("________________________________________________________________________________");
 
             for (int i = 0; i < iterationCount; i++)
@@ -71,7 +72,11 @@ namespace ConcurrencyTests
 
                 TimeSpan timeSpanThreadPool = MeasureNativeThreadPool(feeds);
                 timeSpanThreadPools[i] = timeSpanThreadPool;
-                Console.Write(String.Format("{0:00}.{1:00}s\t\n", timeSpanThreadPool.Seconds, timeSpanThreadPool.Milliseconds / 10));
+                Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanThreadPool.Seconds, timeSpanThreadPool.Milliseconds / 10));
+
+	            TimeSpan timeSpanThread = MeasureThreads(feeds);
+	            timeSpanThreads[i] = timeSpanThread;
+                Console.Write(String.Format("{0:00}.{1:00}s\t\n", timeSpanThread.Seconds, timeSpanThread.Milliseconds / 10));
             }
 
             
@@ -91,6 +96,9 @@ namespace ConcurrencyTests
             TimeSpan timeSpanThreadPoolAvarage = CalculateAverageTimeSpan(timeSpanThreadPools);
             Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanThreadPoolAvarage.Seconds, timeSpanThreadPoolAvarage.Milliseconds / 10));
 
+            TimeSpan timeSpanThreadAvarage = CalculateAverageTimeSpan(timeSpanThreads);
+            Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanThreadAvarage.Seconds, timeSpanThreadAvarage.Milliseconds / 10));
+
             Console.WriteLine("\n________________________________________________________________________________");
             Console.ReadLine();
         }
@@ -105,6 +113,29 @@ namespace ConcurrencyTests
             stopwatch.Stop();
             return stopwatch.Elapsed;            
         }
+
+		static TimeSpan MeasureThreads(IList<string> feedSources)
+		{
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+			var threads = new Thread[feedSources.Count];
+			for (int i = 0; i < feedSources.Count; i++)
+			{
+				var source = feedSources[i];
+				var feedParser = new FeedParser();
+				threads[i] = new Thread(() => feedParser.Parse(source));
+				threads[i].Start();
+			}
+
+			foreach (var thread in threads)
+			{
+				thread.Join();
+			}
+
+            stopwatch.Stop();
+            return stopwatch.Elapsed;            
+		}
 
         static TimeSpan MeasureParallelForeach(IEnumerable<string> feedSources)
         {

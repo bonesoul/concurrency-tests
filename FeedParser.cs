@@ -24,8 +24,9 @@ namespace ConcurrencyTests
     public class FeedParser
     {
         private string _url;
-        public readonly List<FeedItem> Stories = new List<FeedItem>();
+        public readonly List<FeedItem> _stories = new List<FeedItem>();
 
+	    public FeedParser(){}
         public FeedParser(string url)
         {
             this._url = url;
@@ -33,9 +34,17 @@ namespace ConcurrencyTests
             WebReader.Result result = WebReader.Read(url);
             if (result.State != WebReader.States.Success) return;
 
-            this.Parse(result.Response, this.Stories);
+            this.Parse(result.Response, this._stories);
         }
+		public void Parse(string url)
+		{
+			this._url = url;
 
+			WebReader.Result result = WebReader.Read(url);
+			if (result.State != WebReader.States.Success) return;
+
+            this.Parse(result.Response, this._stories);
+		}
         public bool Parse(string xml, List<FeedItem> items)
         {
             try
