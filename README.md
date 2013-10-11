@@ -1,15 +1,17 @@
 # Concurrency Tests [![Build status](https://ci.appveyor.com/api/projects/status?id=bbli6p8ochrxl5ji)](https://ci.appveyor.com/project/concurrency-tests)
 
-Performance tests for different concurrency models. Developed as a answer for [Should i use ThreadPools or Task Parallel Library for IO-bound operations?](http://stackoverflow.com/questions/5213695/should-i-use-threadpools-or-task-parallel-library-for-io-bound-operations)
+Performance tests for different concurrency models. Coded as an answer for [Should i use ThreadPools or Task Parallel Library for IO-bound operations?](http://stackoverflow.com/questions/5213695/should-i-use-threadpools-or-task-parallel-library-for-io-bound-operations)
 
-Test Legend
+**Test Legend**
 * Itr: Iteration
 * Seq: Sequential Approach.
 * PrlEx: Parallel Extensions - Parallel.ForEach
 * TPL: Task Parallel Library
 * TPool: ThreadPool
 
-Sample Test Results
+**Sample Test Results**
+
+```
 Single-Core CPU [Win7-32] -- runs under VMWare --
 
 Test Environment: 1 physical cpus, 1 cores, 1 logical cpus.
@@ -33,6 +35,9 @@ ________________________________________________________________________________
 
 Avg.    08.40s  02.63s  02.02s  02.02s
 ________________________________________________________________________________
+```
+
+```
 Single-Core CPU [WinXP] -- runs under VMWare --
 
 Test Environment: 1 physical cpus, NotSupported cores, NotSupported logical cpus.
@@ -56,6 +61,8 @@ ________________________________________________________________________________
 
 Avg.    08.46s  03.19s  02.54s  02.46s
 ________________________________________________________________________________
+```
+```
 Dual-Core CPU [Win7-64]
 
 Test Environment: 1 physical cpus, 2 cores, 2 logical cpus.
@@ -79,6 +86,8 @@ ________________________________________________________________________________
 
 Avg.    06.17s  01.76s  01.95s  01.75s
 ________________________________________________________________________________
+```
+```
 Quad-Core CPU [Win7-64] -- HyprerThreading Supported --
 
 Test Environment: 1 physical cpus, 4 cores, 8 logical cpus.
@@ -102,7 +111,8 @@ ________________________________________________________________________________
 
 Avg.    08.35s  01.99s  01.75s  01.77s
 ________________________________________________________________________________
-Summarization
+```
+**Summarization**
 
 Whether you run on a single-core environment or a multi-core one, Parallel Extensions, TPL and ThreadPool behaves the same and gives approximate results.
 Still TPL has advantages like easy exception handling, cancellation support and ability to easily return Task results. Though Parallel Extensions is also another viable alternative.
