@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ConcurrencyTests")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Performance tests for different concurrency models. - https://github.com/raistlinthewiz/concurrency-tests")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("Hüseyin Uslu")]
 [assembly: AssemblyProduct("ConcurrencyTests")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCopyright("Copyright © Hüseyin Uslu 2011 - 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

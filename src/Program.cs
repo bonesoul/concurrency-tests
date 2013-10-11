@@ -1,16 +1,24 @@
 ﻿/*    
- * Copyright (C) 2011, Hüseyin Uslu - shalafiraistlin@gmail.com
- *  
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General 
- * Public License as published by the Free Software Foundation, either version 3 of the License, or (at your 
- * option) any later version.
+ * The MIT License (MIT)
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the 
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
- * for more details.
+ * Copyright (c) 2011 - 2013 Hüseyin Uslu - shalafiraistlin@gmail.com
  * 
- * You should have received a copy of the GNU General Public License along with this program.  If not, see 
- * <http://www.gnu.org/licenses/>. 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software. 
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  */
 
@@ -26,8 +34,18 @@ namespace ConcurrencyTests
 {
     class Program
     {
+        /// <summary>
+        /// Iteration count.
+        /// </summary>
+        public const int IterationCount = 10;
+
+        /// <summary>
+        /// Program entrance.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
+            // list of feeds to fetch.
             string[] feeds = {
                                  "http://www.teamliquid.net/rss/news.xml",
                                  "http://www.diablofans.com/rss/forums/1-diablo-fans-home-page-news/",
@@ -41,90 +59,112 @@ namespace ConcurrencyTests
 								  "http://www.d3sanc.com/feed/"	
                              };
 
-            const int iterationCount = 10;
-            var timeSpanSequentials = new TimeSpan[iterationCount];
-            var timeSpanParallelForEachs = new TimeSpan[iterationCount];
-            var timeSpanTPLs = new TimeSpan[iterationCount];
-            var timeSpanThreadPools = new TimeSpan[iterationCount];
-	        var timeSpanThreads = new TimeSpan[iterationCount];
+            var timeSpanSequentials = new TimeSpan[IterationCount];
+            var timeSpanParallelForEachs = new TimeSpan[IterationCount];
+            var timeSpanTPLs = new TimeSpan[IterationCount];
+            var timeSpanThreadPools = new TimeSpan[IterationCount];
+	        var timeSpanThreads = new TimeSpan[IterationCount];
 
-            //PrintCPUInfo();
+            PrintCPUInfo(); // comment this if you will be running on non-windows environment.
+
             Console.WriteLine("Will be parsing a total of {0} feeds.", feeds.Length);
             Console.WriteLine("________________________________________________________________________________");
             Console.WriteLine("Itr.\tSeq.\tPrlEx\tTPL\tTPool\tThread");
             Console.WriteLine("________________________________________________________________________________");
 
-            for (int i = 0; i < iterationCount; i++)
+            // run the iterations and measure timings.
+            for (int i = 0; i < IterationCount; i++)
             {
                 Console.Write("#{0}\t", i + 1);
 
-                TimeSpan timeSpanSequential = MeasureSequential(feeds);
+                var timeSpanSequential = MeasureSequential(feeds);
                 timeSpanSequentials[i] = timeSpanSequential;
                 Console.Write(String.Format("{0:00}.{1:00}s\t",timeSpanSequential.Seconds, timeSpanSequential.Milliseconds / 10));
 
-                TimeSpan timeSpanParallelForeach = MeasureParallelForeach(feeds);
+                var timeSpanParallelForeach = MeasureParallelForeach(feeds);
                 timeSpanParallelForEachs[i] = timeSpanParallelForeach;
                 Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanParallelForeach.Seconds, timeSpanParallelForeach.Milliseconds / 10));
 
-                TimeSpan timeSpanTPL = MeasureTPL(feeds);
+                var timeSpanTPL = MeasureTPL(feeds);
                 timeSpanTPLs[i] = timeSpanTPL;
                 Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanTPL.Seconds, timeSpanTPL.Milliseconds / 10));
 
-                TimeSpan timeSpanThreadPool = MeasureNativeThreadPool(feeds);
+                var timeSpanThreadPool = MeasureNativeThreadPool(feeds);
                 timeSpanThreadPools[i] = timeSpanThreadPool;
                 Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanThreadPool.Seconds, timeSpanThreadPool.Milliseconds / 10));
 
-	            TimeSpan timeSpanThread = MeasureThreads(feeds);
+	            var timeSpanThread = MeasureThreads(feeds);
 	            timeSpanThreads[i] = timeSpanThread;
                 Console.Write(String.Format("{0:00}.{1:00}s\t\n", timeSpanThread.Seconds, timeSpanThread.Milliseconds / 10));
             }
-
             
-            // print the averages also
+            // calculate the average timings also.
             Console.WriteLine("\n________________________________________________________________________________");
             Console.Write("Avg.\t");
 
-            TimeSpan timeSpanSequentialAverage = CalculateAverageTimeSpan(timeSpanSequentials);
+            var timeSpanSequentialAverage = CalculateAverageTimeSpan(timeSpanSequentials);
             Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanSequentialAverage.Seconds, timeSpanSequentialAverage.Milliseconds / 10));
 
-            TimeSpan timeSpanParallelForeachAverage = CalculateAverageTimeSpan(timeSpanParallelForEachs);
+            var timeSpanParallelForeachAverage = CalculateAverageTimeSpan(timeSpanParallelForEachs);
             Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanParallelForeachAverage.Seconds, timeSpanParallelForeachAverage.Milliseconds / 10));
 
-            TimeSpan timeSpanTPLAverage = CalculateAverageTimeSpan(timeSpanTPLs);
+            var timeSpanTPLAverage = CalculateAverageTimeSpan(timeSpanTPLs);
             Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanTPLAverage.Seconds, timeSpanTPLAverage.Milliseconds / 10));
 
-            TimeSpan timeSpanThreadPoolAvarage = CalculateAverageTimeSpan(timeSpanThreadPools);
+            var timeSpanThreadPoolAvarage = CalculateAverageTimeSpan(timeSpanThreadPools);
             Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanThreadPoolAvarage.Seconds, timeSpanThreadPoolAvarage.Milliseconds / 10));
 
-            TimeSpan timeSpanThreadAvarage = CalculateAverageTimeSpan(timeSpanThreads);
+            var timeSpanThreadAvarage = CalculateAverageTimeSpan(timeSpanThreads);
             Console.Write(String.Format("{0:00}.{1:00}s\t", timeSpanThreadAvarage.Seconds, timeSpanThreadAvarage.Milliseconds / 10));
 
             Console.WriteLine("\n________________________________________________________________________________");
             Console.ReadLine();
         }
 
-        static TimeSpan MeasureSequential(IEnumerable<string> feedSources)
+        #region Measurement code
+
+        #region sequential
+
+        /// <summary>
+        /// Measures sequential version.
+        /// </summary>
+        /// <param name="feedSources"></param>
+        /// <returns></returns>
+        private static TimeSpan MeasureSequential(IEnumerable<string> feedSources)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            foreach (var f in feedSources.Select(feedSource => new FeedParser(feedSource))) { }
+            foreach (var f in feedSources.Select(feedSource => new FeedParser(feedSource)))
+            {
+                f.Parse();
+            }
 
             stopwatch.Stop();
             return stopwatch.Elapsed;            
         }
 
-		static TimeSpan MeasureThreads(IList<string> feedSources)
+        #endregion
+
+        #region Threaded
+
+        /// <summary>
+        /// Measures threaded version.
+        /// </summary>
+        /// <param name="feedSources"></param>
+        /// <returns></returns>
+		private static TimeSpan MeasureThreads(IList<string> feedSources)
 		{
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
 			var threads = new Thread[feedSources.Count];
-			for (int i = 0; i < feedSources.Count; i++)
+
+			for (var i = 0; i < feedSources.Count; i++)
 			{
-				var source = feedSources[i];
-				var feedParser = new FeedParser();
-				threads[i] = new Thread(() => feedParser.Parse(source));
+                var source = feedSources[i]; /* work-around modified closures */
+				var feedParser = new FeedParser(source);
+				threads[i] = new Thread(() => feedParser.Parse());
 				threads[i].Start();
 			}
 
@@ -137,30 +177,38 @@ namespace ConcurrencyTests
             return stopwatch.Elapsed;            
 		}
 
-        static TimeSpan MeasureParallelForeach(IEnumerable<string> feedSources)
+        #endregion
+
+        #region Paralel-Foreach
+
+        private static TimeSpan MeasureParallelForeach(IEnumerable<string> feedSources)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
             Parallel.ForEach(feedSources, feedSource =>
-                                              {
-                                                  var f = new FeedParser(feedSource);
-                                              }
+                {
+                    var f = new FeedParser(feedSource);
+                    f.Parse();
+                }
             );
 
             stopwatch.Stop();
             return stopwatch.Elapsed;
         }
 
-        static TimeSpan MeasureTPL(IList<string> feedSources)
+        #endregion
+
+        # region Task Parallel Library
+        private static TimeSpan MeasureTPL(IList<string> feedSources)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
             var tasks = new Task[feedSources.Count];
-            for (int i = 0; i < feedSources.Count;i++ )
+            for (var i = 0; i < feedSources.Count;i++ )
             {
-                string source = feedSources[i]; /* work-around modified closures */
+                var source = feedSources[i]; /* work-around modified closures */
                 tasks[i] = Task.Factory.StartNew(() => TPLFeedParserTask(source));
             }
 
@@ -170,12 +218,17 @@ namespace ConcurrencyTests
             return stopwatch.Elapsed;
         }
 
-        static void TPLFeedParserTask(string feedSource)
+        private static void TPLFeedParserTask(string feedSource)
         {
             var f = new FeedParser(feedSource);
+            f.Parse();
         }
 
-        static TimeSpan MeasureNativeThreadPool(string[] feedSources)
+        #endregion
+
+        #region Thread Pools
+
+        private static TimeSpan MeasureNativeThreadPool(string[] feedSources)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -198,14 +251,36 @@ namespace ConcurrencyTests
         static void ThreadPoolTask(object data)
         {
             var f = new FeedParser(((ThreadPoolDataWrapper) data).FeedSource);
-            (data as ThreadPoolDataWrapper).ResetEvent.Set();
+            f.Parse();
+            var threadPoolDataWrapper = data as ThreadPoolDataWrapper;
+
+            if (threadPoolDataWrapper != null) 
+                threadPoolDataWrapper.ResetEvent.Set();
         }
 
-        static TimeSpan CalculateAverageTimeSpan(TimeSpan[] timeSpans)
+        class ThreadPoolDataWrapper
+        {
+            public ManualResetEvent ResetEvent { get; set; }
+            public string FeedSource { get; private set; }
+
+            public ThreadPoolDataWrapper(ManualResetEvent @event, string feedSource)
+            {
+                this.ResetEvent = @event;
+                this.FeedSource = feedSource;
+            }
+        }
+
+        #endregion
+
+        private static TimeSpan CalculateAverageTimeSpan(TimeSpan[] timeSpans)
         {
             double miliseconds = timeSpans.Sum(t => t.TotalMilliseconds) / timeSpans.Length;
             return TimeSpan.FromMilliseconds(miliseconds);
         }
+
+        #endregion
+
+        # region CPU-info
 
         static void PrintCPUInfo()
         {
@@ -246,15 +321,5 @@ namespace ConcurrencyTests
         }
     }
 
-    class ThreadPoolDataWrapper
-    {
-        public ManualResetEvent ResetEvent { get; set; }
-        public string FeedSource { get; private set; }
-
-        public ThreadPoolDataWrapper(ManualResetEvent @event, string feedSource)
-        {
-            this.ResetEvent = @event;
-            this.FeedSource = feedSource;
-        }
-    }
+    #endregion
 }
